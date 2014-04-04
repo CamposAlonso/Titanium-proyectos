@@ -23,47 +23,47 @@ function Fijar(e) {
   alert(e.source.title);
 }
 
-							  	
-							  	var button = Ti.UI.createButton({
-							  		backgroundColor:"yellow",
-								    //backgroundImage: 'off.png',
-								    title:"off",
-								    top: 3,
-								    width: 37,
-								    height: 35,
-								    right:0
-								});
-							  	
-							  	button.on = function() {
-								    this.backgroundColor = '#159902';
-								    this.value = true;
-								    //this.backgroundImage ="on.png";
-								    this.title ="on";
-								    
-								};
-							 
-								button.off = function() {
-								    this.backgroundColor = '#aaa';
-								    this.value = false;
-								    //this.backgroundImage ="off.png";
-								    this.title ="off";
-								    
-								};
-							 	
-								button.addEventListener('click', function(e) {
-								    if(false == e.source.value) {
-								        e.source.on();
-								       alert(this.title);
-								       Obtener(e);
-								       Fijar(e);
-								    } else {
-								        e.source.off();
-								       alert(this.value);
-								       Obtener(e);
-								       Fijar(e);
-								    }
-								});
-								
-							  	win1.add(button);
-win1.open();
 
+	var button = Ti.UI.createButton({
+		backgroundColor:"yellow",
+	  //backgroundImage: 'off.png',
+	    title:"off",
+	    top: 3,
+	    width: 37,
+	    height: 35,
+	    right:0
+	});
+
+	  	button.on = function() {
+	    this.backgroundColor = '#159902';
+	    this.value = true;
+	  //this.backgroundImage ="on.png";
+	    this.title ="on";
+		};
+
+		button.off = function() {
+	    this.backgroundColor = '#aaa';
+	    this.value = false;
+      //this.backgroundImage ="off.png";
+	    this.title ="off";
+		};
+		
+		button.obtener =function(){
+			return this.value;
+		};
+		
+		button.addEventListener('click', function(e) {
+	    if(false == e.source.value) {
+           e.source.on();
+	       alert(e.source.obtener());
+	    } else {
+	        e.source.off();
+	        alert(e.source.obtener());
+	    }
+		});
+			
+			
+			
+			
+win1.add(button);
+win1.open();
