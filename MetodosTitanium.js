@@ -35,7 +35,8 @@ function Boton () {
 	    top: 3,
 	    width: 37,
 	    height: 35,
-	    right:400
+	    right:400,
+	    value:false
 	});
 	
 	boton.getTitulo = function () {
@@ -45,6 +46,19 @@ function Boton () {
 	boton.setTitulo = function (titulo){
 		this.title = titulo;
 	};
+	boton.on = function() {
+	    this.backgroundColor = '#159902';
+	    this.value = true;
+	  //this.backgroundImage ="on.png";
+	    this.title ="on";
+	};
+							 
+	boton.off = function() {
+	   this.backgroundColor = '#aaa';
+	   this.value = false;
+	 //this.backgroundImage ="off.png";
+	   this.title ="off";
+	 };
 	return boton;
 	
 }
@@ -56,11 +70,41 @@ function Boton () {
  */
 var obj = new Boton();
 obj.setTitulo("ok");
-obj.addEventListener('click', function(e) {
-	alert(e.source.getTitulo());  
-});
-//Por ultimo se puede acceder al titulo mediante el obj.getTitulo
-alert(obj.getTitulo());
 
+
+
+//Por ultimo se puede acceder al titulo mediante el obj.getTitulo
+
+function LABEL () {
+	var labelUserName = Ti.UI.createLabel({
+	color:'black',
+	font:{fontFamily:'Arial', fontSize:16, fontWeight:'bold'},
+	text:'*' + obj.getTitulo(),
+	left:50, top: 6,
+	width:360, height: 30
+	});
+	
+	labelUserName.getTitulo = function () {
+	  return this.text;
+	};
+	
+	labelUserName.setTitulo = function (text){
+		this.text = text;
+	};
+	
+	return labelUserName;
+	
+}
+var label = new LABEL();
+obj.addEventListener('click', function(e) {
+    if(false == e.source.value) {
+        e.source.on();
+        label.setTitulo(obj.getTitulo());
+    } else {
+        e.source.off();
+        label.setTitulo(obj.getTitulo());								       							        
+    }
+});
+win1.add(label);
 win1.add(obj);
 win1.open();
