@@ -22,48 +22,45 @@ function Fijar(e) {
   e.source.title ="OK";
   alert(e.source.title);
 }
-
-
-	var button = Ti.UI.createButton({
+/*
+ * La funcion Boton contiene primero la creacion del boton con los atributos predefinidos
+ * Despues la funcion getTitulo dentro del boton se utiliza para obtener la informacion del titulo
+ * En caso contrario setTitulo se utiliza para fijar un valor determinado
+ */
+function Boton () {
+	var boton = Ti.UI.createButton({
 		backgroundColor:"yellow",
 	  //backgroundImage: 'off.png',
 	    title:"off",
 	    top: 3,
 	    width: 37,
 	    height: 35,
-	    right:0
+	    right:400
 	});
+	
+	boton.getTitulo = function () {
+	  return this.title;
+	};
+	
+	boton.setTitulo = function (titulo){
+		this.title = titulo;
+	};
+	return boton;
+	
+}
+/*
+ * obj se utiliza para crear un nuevo objeto a partir de la funcion Boton
+ * obj.setTitulo llama a la funcion de fijar un nuevo valor
+ * obj.addEventListener lo que permite es capturar un evento que al cliquear el botonb
+ * se mande una alerta que muestre el titulo del boton
+ */
+var obj = new Boton();
+obj.setTitulo("ok");
+obj.addEventListener('click', function(e) {
+	alert(e.source.getTitulo());  
+});
+//Por ultimo se puede acceder al titulo mediante el obj.getTitulo
+alert(obj.getTitulo());
 
-	  	button.on = function() {
-	    this.backgroundColor = '#159902';
-	    this.value = true;
-	  //this.backgroundImage ="on.png";
-	    this.title ="on";
-		};
-
-		button.off = function() {
-	    this.backgroundColor = '#aaa';
-	    this.value = false;
-      //this.backgroundImage ="off.png";
-	    this.title ="off";
-		};
-		
-		button.obtener =function(){
-			return this.value;
-		};
-		
-		button.addEventListener('click', function(e) {
-	    if(false == e.source.value) {
-           e.source.on();
-	       alert(e.source.obtener());
-	    } else {
-	        e.source.off();
-	        alert(e.source.obtener());
-	    }
-		});
-			
-			
-			
-			
-win1.add(button);
+win1.add(obj);
 win1.open();
