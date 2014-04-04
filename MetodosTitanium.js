@@ -70,7 +70,15 @@ function Boton () {
  */
 var obj = new Boton();
 obj.setTitulo("ok");
-
+obj.addEventListener('click', function(e) {
+    if(false == e.source.value) {
+        e.source.on();
+        label.setTitulo(obj.getTitulo());
+    } else {
+        e.source.off();
+        label.setTitulo(obj.getTitulo());								       							        
+    }
+});
 
 
 //Por ultimo se puede acceder al titulo mediante el obj.getTitulo
@@ -96,15 +104,7 @@ function LABEL () {
 	
 }
 var label = new LABEL();
-obj.addEventListener('click', function(e) {
-    if(false == e.source.value) {
-        e.source.on();
-        label.setTitulo(obj.getTitulo());
-    } else {
-        e.source.off();
-        label.setTitulo(obj.getTitulo());								       							        
-    }
-});
+
 win1.add(label);
 win1.add(obj);
 win1.open();
