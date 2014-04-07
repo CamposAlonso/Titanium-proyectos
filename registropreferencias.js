@@ -48,8 +48,19 @@ var tab1 = Titanium.UI.createTab({
 						  height:1000,
 						  width: 500
 					});
+					var guardar = Ti.UI.createButton({
+						title:"Guardar",
+						width:"100%",
+						backgroundColor:"#E3C109",
+						height:50,
+						top:500,
+						font: {fontFamily: 'Helvetica Neue'},
+						color:"white"
+					});
+					view.add(guardar);
 					
 					scrollView.add(view);
+					
                      //Insert the JSON data to the table view 
                      for( var i=0; i<json.length; i++){ 
                      	
@@ -64,15 +75,30 @@ var tab1 = Titanium.UI.createTab({
 	    					selectedBackgroundColor:'yellow',
 	    					height:40
 							});
+						row.id = json[i].id;
+						
+						
 					  //La variable valor se crea para poder capturar si el boton esta marcado o no
-					   var valor =0;	
+					   var valor =false;	
 					   //La variable id se utiliza para identificar el numero de la fila en que esta posicionado
 					   	
-							
-						  	if(json[i].tipo=="Academica" && json[i].detalles==""){
-						  		var basicSwitch = Ti.UI.createSwitch({
-								  value:true,
+					   	var basicSwitch = Ti.UI.createSwitch({
+								  value:false,
 								  right:0
+								});
+					   	
+						  	if(json[i].tipo=="Academico" && json[i].detalles==""){
+						  		
+								
+								basicSwitch.addEventListener('change',function(e){
+									if(true == this.value) {
+								       Ti.API.info('Switch value: ' + basicSwitch.value);
+								        button.value =true;
+								    } else {
+								       Ti.API.info('Switch value: ' + basicSwitch.value);
+								        
+								    }
+								  Ti.API.info('Switch value: ' + basicSwitch.value);
 								});
 								row.add(basicSwitch);
 								var labelUserName = Ti.UI.createLabel({
@@ -97,61 +123,80 @@ var tab1 = Titanium.UI.createTab({
 							  	
 							  	var button = Ti.UI.createButton({
 								    backgroundImage: 'off.png',
-								    //backgroundSelectedImage:'on.png',
-								    //title: 'Click me!',
+								    value:false,
+								    title:"",
 								    top: 3,
 								    width: 37,
 								    height: 35,
 								    right:0
 								});
+							  	
 							  	button.on = function() {
 								    this.backgroundColor = '#159902';
 								    this.value = true;
 								    this.backgroundImage ="on.png";
-								    valor =1;
+								    this.title ="on";
+								    row.on = true;
 								};
 							 
 								button.off = function() {
 								    this.backgroundColor = '#aaa';
 								    this.value = false;
 								    this.backgroundImage ="off.png";
-								    valor =0;
+								    this.title ="off";
+								    row.on = false;
 								};
-							 
+							 	
+							 	button.obtener = function() {
+								    return this.value;
+								};
+								row.on = button.obtener;
 								button.addEventListener('click', function(e) {
 								    if(false == e.source.value) {
 								        e.source.on();
-								        alert(valor+"/");
+								        row.on = e.source.obtener;
+								       
 								    } else {
-								        e.source.off();
-								         alert(valor+"/");
+								        e.source.off();								       
+								        
 								    }
 								});
 							  	row.add(button);
+							  	
 						  	}
 						  	
-						  	
-								if (json[i].tipo=="Academica" || json[i].tipo =="Area de Estudio") {
+								if (json[i].tipo=="Academica" || json[i].tipo=="Academico" || json[i].tipo =="Area de Estudio") {
                      				dataArray.push(row);     	
                      			};
                      	
-                     	
-						        
                      };
                      tableViewAcademica.setData(dataArray);
+                     
+                     tableViewAcademica.addEventListener('click', function(e)
+							   {
+							   	//alert(e);
+							   	if(tableViewAcademica.data[0].rows[0].children[0].value==0){
+							   		for (var i=0; i < json.length; i++) {
+										 //var s =tableViewAcademica.data[0].rows[e.index].children[1].value;
+										 var s =tableViewAcademica.data[0].rows[e.index].children[1].on;
+										 alert(s);
+										 s =0;
+										 alert(s);
+									   };
+							   	}
+							  	 //Mediante la propiedad children se captura
+							    //el objeto el siguiente punto 
+							   });
+                     
                      view.add(tableViewAcademica);
-                     
-                     
-                     win1.add(scrollView);                            
+                     win1.add(scrollView);
+                                                
                }; 
- var IMG_BASE = 'http://alonsocampos.net46.net/';
+             
  //Array to store the data from the todo list 
 var dataArray = [];
 var dataArray2 = [];
 var dataArray3 =[];    
-
-
-
 
 tabGroup.addTab(tab1);  
 tabGroup.open();
