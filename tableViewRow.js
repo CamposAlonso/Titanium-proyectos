@@ -30,10 +30,11 @@ var tab1 = Titanium.UI.createTab({
                             tableView.headerTitle = "The database row is empty"; 
                      }                      
                      //Emptying the data to refresh the view 
-                     dataArray = [];
-                     dataArray2 = [];
+                     dataArray  =[];
+                     dataArray2 =[];
                      dataArray3 =[];
-                     var scrollView = Ti.UI.createScrollView({
+                     
+                    var scrollView = Ti.UI.createScrollView({
 						  //contentWidth: 'auto',
 						  contentHeight: 'auto',
 						  showVerticalScrollIndicator: true,
@@ -41,23 +42,14 @@ var tab1 = Titanium.UI.createTab({
 						  height: '90%',
 						  width: 500
 						});
-                     var view = Ti.UI.createView({
+                    var view = Ti.UI.createView({
 						  backgroundColor:'c5ccd4',
 						  borderRadius: 10,
 						  top: 0,
 						  height:1000,
 						  width: 500
 					});
-					var guardar = Ti.UI.createButton({
-						title:"Guardar",
-						width:"100%",
-						backgroundColor:"#E3C109",
-						height:50,
-						top:500,
-						font: {fontFamily: 'Helvetica Neue'},
-						color:"white"
-					});
-					view.add(guardar);
+					
 					
 					scrollView.add(view);
 					
@@ -121,7 +113,7 @@ var tab1 = Titanium.UI.createTab({
 							  	});
 							  	row.add(labelUserName);
 							  	
-							  	var button = Ti.UI.createButton({
+							   var button = Ti.UI.createButton({
 								    backgroundImage: 'off.png',
 								    value:false,
 								    title:"",
@@ -171,27 +163,110 @@ var tab1 = Titanium.UI.createTab({
                      	
                      };
                      tableViewAcademica.setData(dataArray);
-                     
-                     tableViewAcademica.addEventListener('click', function(e)
+                     var guardar = Ti.UI.createButton({
+						title:"Guardar",
+						width:"100%",
+						backgroundColor:"#E3C109",
+						height:50,
+						top:500,
+						font: {fontFamily: 'Helvetica Neue'},
+						color:"white"
+					});
+					view.add(guardar);
+                    view.add(tableViewAcademica);
+                    win1.add(scrollView);
+                   
+                     guardar.addEventListener('click', function(e)
 							   {
-							   	//alert(e);
+							   	var a1 =tableViewAcademica.data[0].rows[0].children[0].value;
+							   	var a2 =tableViewAcademica.data[0].rows[1].children[1].value;
+							   	var a3 =tableViewAcademica.data[0].rows[2].children[1].value;
+							   	var a4 =tableViewAcademica.data[0].rows[3].children[1].value;
+							   	var a5 =tableViewAcademica.data[0].rows[4].children[1].value;
+							   	var a6 =tableViewAcademica.data[0].rows[5].children[1].value;
+							   	var a7 =tableViewAcademica.data[0].rows[6].children[1].value;
+							   	var a8 =tableViewAcademica.data[0].rows[7].children[1].value;
+							   	var a9 =tableViewAcademica.data[0].rows[8].children[1].value;
+							   	var a10 =tableViewAcademica.data[0].rows[9].children[1].value;
+    						   	
+    						   	
+    						   	
+							var enviar = Ti.Network.createHTTPClient({ 
+			                    onerror: function(e){ 
+			                           Ti.API.debug(e.error); 
+			                           alert('There was an error during the connection'); 
+			                     }, 
+			                  timeout:3000, 
+			              });                      
+			              //Here you have to change it for your local ip 
+			              enviar.open('POST', 'http://alonsocampos.net46.net/segundaversion/gurdarintereses.php'); 
+			              var params = 
+								({
+									academica: tableViewAcademica.data[0].rows[0].children[0].value,
+                                    area:tableViewAcademica.data[0].rows[1].children[0].value,
+                                    congreso:tableViewAcademica.data[0].rows[2].children[1].value,
+                                    curso:tableViewAcademica.data[0].rows[3].children[1].value,
+                                    convencion:tableViewAcademica.data[0].rows[4].children[1].value,
+                                    seminario:tableViewAcademica.data[0].rows[5].children[1].value,
+                                    taller:tableViewAcademica.data[0].rows[6].children[1].value,
+                                    diplomado:tableViewAcademica.data[0].rows[7].children[1].value,     
+                                    conferencia:tableViewAcademica.data[0].rows[8].children[1].value,
+                                    expo:tableViewAcademica.data[0].rows[9].children[1].value,
+			                                
+									
+								}); 
+			              enviar.send(params);
+						  enviar.onload = function(){
+						  		if (this.responseText == "Insert failed" || this.responseText == "That username or email already exists")
+								    {
+								        alert(this.responseText);
+								    } 
+								    else
+								    {
+								        var alertDialog = Titanium.UI.createAlertDialog({
+								            title: 'Alert',
+								            message: this.responseText,
+								            buttonNames: ['OK']
+								        });
+								        alertDialog.show();
+								       
+								    }
+						  }; 
+    						   	
+    						   	//alert(e);
 							   	//rows indica la fila
 							   	//children indica el numero de objeto
-							   	//.value indica la propiedad 
-							   	alert(tableViewAcademica.data[0].rows[e.index].children[1].value);
+							   	//.value indica la propiedad
+							    alert(a1);
+							   	alert(
+							   	tableViewAcademica.data[0].rows[0].children[0].value+"1/"+
+							   	tableViewAcademica.data[0].rows[1].children[1].value+"2/"+
+							   	tableViewAcademica.data[0].rows[2].children[1].value+"3/"+
+							   	tableViewAcademica.data[0].rows[3].children[1].value+"4/"+
+							   	tableViewAcademica.data[0].rows[4].children[1].value+"5/"+
+							   	tableViewAcademica.data[0].rows[5].children[1].value+"6/"+
+							   	tableViewAcademica.data[0].rows[6].children[1].value+"7/"+
+							   	tableViewAcademica.data[0].rows[7].children[1].value+"8/"+
+							   	tableViewAcademica.data[0].rows[8].children[1].value+"9/"+
+							   	tableViewAcademica.data[0].rows[9].children[1].value); 
+							   
 							  	 //Mediante la propiedad children se captura
 							    //el objeto el siguiente punto 
 							   });
-                     
-                     view.add(tableViewAcademica);
-                     win1.add(scrollView);
-                                                
+                				
+							   	
+							  
+							  	 //Mediante la propiedad children se captura
+							    //el objeto el siguiente punto 
+							  
+                			
+                                                              
                }; 
              
  //Array to store the data from the todo list 
 var dataArray = [];
 var dataArray2 = [];
 var dataArray3 =[];    
-
+var guardar =[];
 tabGroup.addTab(tab1);  
 tabGroup.open();
