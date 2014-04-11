@@ -347,7 +347,18 @@ var sendit = Ti.Network.createHTTPClient({
 					guardar.addEventListener('click', function(e)
 							   {
 							   	
-    						   	var params = 
+    						   	
+								
+								var enviar = Ti.Network.createHTTPClient({ 
+			                    onerror: function(e){ 
+			                           Ti.API.debug(e.error); 
+			                           alert('There was an error during the connection'); 
+			                     }, 
+			                  timeout:3000, 
+			              });                      
+			              //Here you have to change it for your local ip 
+			              enviar.open('POST', 'http://alonsocampos.net46.net/segundaversion/gurdarintereses.php'); 
+			              var params = 
 								{
 									academica: $.tableViewAcademica.data[0].rows[0].children[0].value,
                                     area:$.tableViewAcademica.data[0].rows[1].children[1].value,
@@ -427,6 +438,25 @@ var sendit = Ti.Network.createHTTPClient({
 									fiestasTematicas:$.tableViewEntretenimiento.data[0].rows[37].children[1].value,
 				                    bienvenida:$.tableViewEntretenimiento.data[0].rows[37].children[1].value,
 								}; 
+								
+			              enviar.send(params);
+						  enviar.onload = function(){
+						  		if (this.responseText == "Insert failed" || this.responseText == "That username or email already exists")
+								    {
+								        alert(this.responseText);
+								    } 
+								    else
+								    {
+								        var alertDialog = Titanium.UI.createAlertDialog({
+								            title: 'Alert',
+								            message: this.responseText,
+								            buttonNames: ['OK']
+								        });
+								        alertDialog.show();
+								       
+								    }
+						  }; 
+								
 								
 							   });
                      
