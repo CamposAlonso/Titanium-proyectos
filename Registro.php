@@ -4,12 +4,15 @@ if (mysqli_connect_errno()) {
     printf("Can't connect to SQL Server. Error Code %s\n", mysqli_connect_error($db));
     exit;
 }
+// Set the default namespace to utf8
+$db->query("SET NAMES 'utf8'");
+$json   = array();
 // Aqui se reciben los valores para poder hacer el registro 
 $nombre    = $_POST['nombre'];
 $apellido  = $_POST['apellido'];
 $fechaNacimiento = "";
 $genero =1;
-$email     = $_POST['email'];
+$email     = "alo";//$_POST['email'];
 $password  = $_POST['password'];
 $activo =0;
 
@@ -48,7 +51,7 @@ else
 
                   //echo "Thanks for registering. You may now login.";
                } else {
-                 echo "Insert failed";
+                 //echo "Insert failed";
                }
             //Se ingresa un registro de preferencia    
             $insert = "INSERT INTO Preferencias (idPreferencia ) VALUES ('') ";
@@ -58,7 +61,7 @@ else
 
                   //echo "Thanks for registering. You may now login.";
                } else {
-                 echo "Insert failed";
+                 //echo "Insert failed";
                }
             //Se declaran 2 variables para agregar un registro nuevo   
             $idPreferencia ="";
@@ -79,15 +82,31 @@ else
                         $query  = mysqli_query($db,$insert);
 
                         if ($query) {
-                          echo "Thanks for registering. You may now login.";
+                            echo "Thanks for registering. You may now login.";
+
+                            if($result = $db->query("SELECT idPreferencia,idCliente FROM  ClientesPreferencias
+                                WHERE idPreferencia='$idPreferencia' AND idCliente = '$idCliente' ")) {
+                            while ($row=$result->fetch_assoc()) {
+                                $json[]=array(
+                                    'idCliente'=>$row['idCliente'],
+                                    'idPreferencia'=>$row['idPreferencia'],
+                                    
+                                );
+                            }
+                        }
+                        $result->close();
+
+                        header("Content-Type: text/json");
+                        echo json_encode(array( 'nombre'  =>   $json)); 
+                        $db->close(); 
+
                         } else {
-                             echo "Insert failed";
+                             //echo "Insert failed";
                         }
 
                 }
 
         }
-
         
               //echo "Thanks for registering. You may now login. ";
     }
@@ -96,7 +115,7 @@ else
         echo "Insert failed";
     }
 }
-$db->close(); 
+//$db->close(); 
 ?>
 
 
