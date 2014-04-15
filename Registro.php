@@ -12,7 +12,7 @@ $nombre    = $_POST['nombre'];
 $apellido  = $_POST['apellido'];
 $fechaNacimiento = "";
 $genero =1;
-$email     = "alo";//$_POST['email'];
+$email     = "a21lo";//$_POST['email'];
 $password  = $_POST['password'];
 $activo =0;
 
