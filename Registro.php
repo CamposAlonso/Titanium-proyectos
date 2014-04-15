@@ -12,11 +12,16 @@ $nombre    = $_POST['nombre'];
 $apellido  = $_POST['apellido'];
 $fechaNacimiento = "";
 $genero =1;
-$email     = "a21lo";//$_POST['email'];
+$email     = $_POST['email'];
 $password  = $_POST['password'];
 $activo =0;
 
 
+/*
+    Nota los mensajes de insert fail deben de enviarse en caso contrario no funciona 
+    debido a que genera un acceso con solo tener el correo duplicado
+    brinda acceso pero en cambio si se coloca el insert failed evita esto
+*/
 
 //La primera consulta sirve para evaluar si el correo esta registrado
 $sql    = "SELECT email FROM Usuarios WHERE email = '" . $email. "'";
@@ -51,7 +56,7 @@ else
 
                   //echo "Thanks for registering. You may now login.";
                } else {
-                 //echo "Insert failed";
+                 echo "Insert failed";
                }
             //Se ingresa un registro de preferencia    
             $insert = "INSERT INTO Preferencias (idPreferencia ) VALUES ('') ";
@@ -61,7 +66,7 @@ else
 
                   //echo "Thanks for registering. You may now login.";
                } else {
-                 //echo "Insert failed";
+                    echo "Insert failed";
                }
             //Se declaran 2 variables para agregar un registro nuevo   
             $idPreferencia ="";
@@ -83,25 +88,9 @@ else
 
                         if ($query) {
                             echo "Thanks for registering. You may now login.";
-
-                            if($result = $db->query("SELECT idPreferencia,idCliente FROM  ClientesPreferencias
-                                WHERE idPreferencia='$idPreferencia' AND idCliente = '$idCliente' ")) {
-                            while ($row=$result->fetch_assoc()) {
-                                $json[]=array(
-                                    'idCliente'=>$row['idCliente'],
-                                    'idPreferencia'=>$row['idPreferencia'],
-                                    
-                                );
-                            }
-                        }
-                        $result->close();
-
-                        header("Content-Type: text/json");
-                        echo json_encode(array( 'nombre'  =>   $json)); 
-                        $db->close(); 
-
+                        
                         } else {
-                             //echo "Insert failed";
+                            echo "Insert failed";
                         }
 
                 }
@@ -117,8 +106,3 @@ else
 }
 //$db->close(); 
 ?>
-
-
-
-
-
