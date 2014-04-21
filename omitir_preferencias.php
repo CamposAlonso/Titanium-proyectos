@@ -40,7 +40,7 @@ if ($results > 0)
     }
     else
     {
-        echo "Insert failed";    $query  = mysqli_query($db,$insert);
+        echo "Insert failed";    
 
     }
 
