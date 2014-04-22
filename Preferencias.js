@@ -1,62 +1,74 @@
 /**
  * @author Hector Campos Alonso
+ * Creacion de Tabla de Preferencias
  */
+
+
+
 var sendit = Ti.Network.createHTTPClient({ 
     onerror: function(e){ 
     Ti.API.debug(e.error); 
-           alert('There was an error during the connection'); 
+           alert('La conexion esta tardando demaciado intente acceder nuevamente'); 
     }, 
     timeout:3000, 
-});                      
-              //Here you have to change it for your local ip 
-              sendit.open('GET', 'http://alonsocampos.net46.net/preferencia.php'); 
-              sendit.send(); 
-              //Function to be called upon a successful response 
-              sendit.onload = function(){ 
-                     var json = JSON.parse(this.responseText); 
-                     //json.nombre viene de un array de php en el servidor
-                     var json = json.nombre; 
-                     //if the database is empty show an alert 
-                     if(json.length == 0){ 
-                            tableView.headerTitle = "The database row is empty"; 
-                     }                      
-                     //Emptying the data to refresh the view 
-                     dataArray = [];
-                     dataArray2 = [];
-                     dataArray3 =[];
-                     var scrollView = Ti.UI.createScrollView({
-						  //contentWidth: 'auto',
-						  contentHeight: 'auto',
-						  showVerticalScrollIndicator: true,
-						  //showHorizontalScrollIndicator: true,
-						  top:280,
-						  height:'95%',
-						  width: 600
-						});
-                     var view = Ti.UI.createView({
-						  backgroundColor:'c5ccd4',
-						  borderRadius: 10,
-						  top:0,
-						  height:3600,
-						  width: 500
+});       /*
+           * Se utiliza el archivo php para obtener todos los registros del 
+           * archivo php
+           * Debido a que no se van a enviar nada de informacion sino solo
+           * recibir informacion entonces dejamos sendit.send() de esta manera
+           */               
+          sendit.open('GET', 'http://alonsocampos.net46.net/preferencia.php'); 
+          sendit.send();
+          /*
+           * Depues de que se ha cargado la informacion se declaran 3 arrays vacios
+           * para que capturen la siguiente informacion en cada TABLA
+           * Tabla Academica       dataArray
+           * Tabla Cultural        dataArray2
+           * Tabla Entretenimiento dataArray3
+           */ 
+          sendit.onload = function(){ 
+                 var json = JSON.parse(this.responseText); 
+                 var json = json.nombre; 
+                 if(json.length == 0){ 
+                        tableView.headerTitle = "No hay informacion disponible"; 
+                 }                      
+                 //Emptying the data to refresh the view 
+                 dataArray = [];
+                 dataArray2 = [];
+                 dataArray3 =[];
+                 //Se utiliza un scroll para poder visualizar el contenido de las 3 tablas
+                 var scrollView = Ti.UI.createScrollView({
+					  //contentWidth: 'auto',
+					  contentHeight: 'auto',
+					  showVerticalScrollIndicator: true,
+					  //showHorizontalScrollIndicator: true,
+					  top:280,
+					  height:'95%',
+					  width: 600
 					});
+				//Se utilica una vista para el fondo de las tablas	
+                 var view = Ti.UI.createView({
+					  backgroundColor:'c5ccd4',
+					  borderRadius: 10,
+					  top:0,
+					  height:3600,
+					  width: 500
+				});
+				//Se agrega la view a el scroll
+				scrollView.add(view);
 					
-					scrollView.add(view);
-					
-                     //Insert the JSON data to the table view 
+                     //Utilizando el objeto JSON se recorre cada elemento
                      for( var i=0; i<json.length; i++){ 
-                     	
-                     	
                      	
                      	var row = Ti.UI.createTableViewRow({    					
 	    					selectedBackgroundColor:'yellow',
 	    					height:40
 							});
-					  //La variable valor se crea para poder capturar si el boton esta marcado o no
-					   var valor =0;	
-					   //La variable id se utiliza para identificar el numero de la fila en que esta posicionado
-					   	
-							
+					  /*
+					   * Debido a que el primer elemento de la fila es un radiobutton 
+					   * se crea una condicion para poder agregarlo si se cumple agregara el radio
+					   * en caso contrario agregara el texto y un boton
+					   */
 						  	if(json[i].tipo=="Academico" && json[i].detalles==""){
 						  		var basicSwitch = Ti.UI.createSwitch({
 								  value:true,
@@ -73,6 +85,10 @@ var sendit = Ti.Network.createHTTPClient({
 							  	});
 							  	row.add(labelUserName);
 						  	}else{
+						  		/*
+						  		 * Cuando no se cumble la condicion se crea un boton con 2 condicios
+						  		 * cuando esta on() o esta en off() estas permiten capturar la preferencia del usuario
+						  		 */
 						  		var labelUserName = Ti.UI.createLabel({
 							    color:'black',
 							    font:{fontFamily:'Arial', fontSize:16, fontWeight:'bold'},
@@ -118,7 +134,7 @@ var sendit = Ti.Network.createHTTPClient({
 							  	row.add(button);
 						  	}
 						  	
-						  	
+						  		//Por ultimo solo se agregara al arreglo si cumple la condicion y los demas seran desechados
 								if (json[i].tipo=="Academica" || json[i].tipo=="Academico" || json[i].tipo =="Area de Estudio") {
                      				dataArray.push(row);     	
                      			};
@@ -126,13 +142,16 @@ var sendit = Ti.Network.createHTTPClient({
                      	
 						        
                      };
+                     /*Despues todo lo contenido de dataArray es asignado a la tabla
+                      * y mostrado en la view de la misma forma trabajan los 2 siguientes 
+                      * buncles for
+                     */
                      $.tableViewAcademica.setData(dataArray);
                      view.add($.tableViewAcademica);
                    
                      for( var i=0; i<json.length; i++){ 
                      	
-                     	
-                     	
+
                      	var row = Ti.UI.createTableViewRow({    					
 	    					selectedBackgroundColor:'yellow',
 	    					height:40
@@ -331,7 +350,10 @@ var sendit = Ti.Network.createHTTPClient({
                      };
                      $.tableViewEntretenimiento.setData(dataArray3);
                      view.add($.tableViewEntretenimiento);
-                     
+                     /*
+                      * Al finalizar las 3 tablas se genera un boton de guardar en la parte 
+                      * final el cual es agregado a la view
+                      */
                      var guardar = Ti.UI.createButton({
 						title:"Guardar",
 						width:"100%",
@@ -343,21 +365,30 @@ var sendit = Ti.Network.createHTTPClient({
 					});
 					view.add(guardar);
 					
-					
+					/*
+					 * Al presionar el boton de guardar se crea una vez mas 
+					 * una peticion de tipo HTTPCLient el cual enviara al servidor
+					 * la informacion necesaria para agregar los registros
+					 */
 					guardar.addEventListener('click', function(e)
 							   {
-							   	
-    						   	
-								
-								var enviar = Ti.Network.createHTTPClient({ 
+							   	var enviar = Ti.Network.createHTTPClient({ 
 			                    onerror: function(e){ 
 			                           Ti.API.debug(e.error); 
 			                           alert('There was an error during the connection'); 
 			                     }, 
 			                  timeout:3000, 
 			              });                      
-			              //Here you have to change it for your local ip 
-			              enviar.open('POST', 'http://alonsocampos.net46.net/segundaversion/gurdarintereses.php'); 
+			              
+			              enviar.open('POST', 'http://alonsocampos.net46.net/segundaversion/gurdarintereses.php');
+			              /*
+			               * Debido a que la tabla tiene informacion dentro se puede acceder a su informacion
+			               * data[0] se usa cuando no hay un 
+			               * rows[0] se usa cuando hay una fila 0 
+			               * children[0] se usa cuando hay un objeto dentro de la fila
+			               * despues de children sigue la propiedad por ejemplo value
+			               */ 
+			              var sesion = arguments[0] || {};
 			              var params = 
 								{
 									academica: $.tableViewAcademica.data[0].rows[0].children[0].value,
@@ -437,11 +468,16 @@ var sendit = Ti.Network.createHTTPClient({
 									showE:$.tableViewEntretenimiento.data[0].rows[36].children[1].value,
 									fiestasTematicas:$.tableViewEntretenimiento.data[0].rows[37].children[1].value,
 				                    bienvenida:$.tableViewEntretenimiento.data[0].rows[37].children[1].value,
+				                    email: sesion.email,
 								}; 
-								
+						/*
+						 * Se envia un objeto json para el servidor php despues
+						 * se evalua la respuesta del servidor si es igual a Insert failed se 
+						 * cancela en caos contrario mostrara un mensaje de bienvenida
+						 */		
 			              enviar.send(params);
 						  enviar.onload = function(){
-						  		if (this.responseText == "Insert failed" || this.responseText == "That username or email already exists")
+						  		if (this.responseText == "Insert failed")
 								    {
 								        alert(this.responseText);
 								    } 
@@ -466,4 +502,36 @@ var sendit = Ti.Network.createHTTPClient({
 var dataArray = [];
 var dataArray2 = [];
 var dataArray3 =[];    
-//
+
+/*
+ * Cuando se coloca omitirPreferencias se colocan todos los valores en 0
+ * por tal motivo se llama a otra direccion, se guarda y da acceso
+ * a la siguiente ventana
+ */
+
+function OmitirPreferencias() {
+ var params = arguments[0] || {};
+	var idCliente = {
+       email: params.email,
+       //password: $.txtPasswordw.value,
+	}; 
+var enviar = Ti.Network.createHTTPClient({ 
+        onerror: function(e){ 
+               Ti.API.debug(e.error); 
+               alert('La conexion esta tardando demaciado intente acceder nuevamente'); 
+         }, 
+      timeout:3000, 
+  });                      
+  enviar.open('POST', 'http://alonsocampos.net46.net/segundaversion/cliente.php'); 
+  enviar.send(idCliente);
+  enviar.onload = function(){
+  	
+    var alertDialog = Titanium.UI.createAlertDialog({
+        title: 'Alert',
+        message: this.responseText,
+        buttonNames: ['OK']
+    });
+    alertDialog.show();
+	Alloy.createController('Evento').getView().open();	
+  }; 
+}
